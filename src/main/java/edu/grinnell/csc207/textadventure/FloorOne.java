@@ -1,26 +1,26 @@
 package edu.grinnell.csc207.textadventure;
+import edu.grinnell.csc207.textadventure.Floor;
 
-public class FloorOne implements Floor {
+public class FloorOne extends Floor {
 
     boolean inside;
     boolean metStudent;
     boolean talkedToStudent;
-    boolean finished;
 
-    public FloorOne() {
+    public FloorOne(Inventory inventory) {
+        super(inventory);
         this.inside = false;
         this.metStudent = false;
         this.talkedToStudent = false;
-        this.finished = false;
     }
 
     public void waiting() {
         if (!inside) {
-            System.out.println("A group of hurrying-to-class students open the door for you. "
-                    + "You enter the building and appear in a hallway.");
+            System.out.println("\nA group of hurrying-to-class students open the door for you.\n"
+                    + "You enter the building and appear in a hallway.\n");
             this.inside = true;
         } else {
-            System.out.println("You're just wasting your time. Try something else.");
+            System.out.println("\nYou're just wasting your time. Try something else.\n");
         }
     }
 
@@ -32,14 +32,14 @@ public class FloorOne implements Floor {
         if (!inside && !metStudent) {
             switch (direction) {
                 case "forward":
-                    System.out.println("You've entered Noyce.");
+                    System.out.println("\nYou've entered Noyce.\n");
                     this.inside = true;
                     break;
 
                 case "back":
                 case "right":
                 case "left":
-                    System.out.println("You're still outside. Just one step further from Noyce. Hurry up!");
+                    System.out.println("\nYou're still outside. Just one step further from Noyce. Hurry up!\n");
                     break;
 
                 default:
@@ -55,7 +55,7 @@ public class FloorOne implements Floor {
                 case "back":
                 case "right":
                 case "left":
-                    System.out.println("Walking is not going to help here. You need to talk to them.");
+                    System.out.println("\nWalking is not going to help here. You need to talk to them.\n");
                     break;
 
                 default:
@@ -68,20 +68,20 @@ public class FloorOne implements Floor {
         if (inside && talkedToStudent) {
             switch (direction) {
                 case "right":
-                    System.out.println("You are going up the stairs to the second floor! "
-                                      + "Closer and closer to your destination!");
+                    System.out.println("\nYou are going up the stairs to the second floor!\n"
+                                      + "Closer and closer to your destination!\n");
                     this.finished = true;
                     break;
 
                 case "back":
-                    System.out.println("You exit Noyce. Why would you do that now? Get back inside and go right!\n"
-                                    + "You step right back into the hallway.");
-                    this.inside = true;   // ← DO NOT allow leaving after talking
+                    System.out.println("\nYou exit Noyce. Why would you do that now? Get back inside and go right!\n"
+                                    + "You step right back into the hallway.\n");
+                    this.inside = true;
                     break;
 
                 case "left":
                 case "forward":
-                    System.out.println("That direction won't help you now. Try going right.");
+                    System.out.println("\nThat direction won't help you now. Try going right.\n");
                     break;
 
                 default:
@@ -95,7 +95,7 @@ public class FloorOne implements Floor {
             switch (direction) {
                 case "forward":
                     System.out.println(
-                        "You enter a small, empty room. The air is stale, and the vents buzz softly.\n"
+                        "\nYou enter a small, empty room. The air is stale, and the vents buzz softly.\n"
                       + "You wait.\n"
                       + "A student slips in, coffee in hand.\n"
                     );
@@ -103,14 +103,14 @@ public class FloorOne implements Floor {
                     break;
 
                 case "back":
-                    System.out.println("You just came back outside. Stop wasting time and go forward to enter Noyce again.");
+                    System.out.println("\nYou just came back outside. Stop wasting time and go forward to enter Noyce again.\n");
                     this.inside = false;
                     break;
 
                 case "right":
-                    System.out.println("You are going up the stairs to the second floor! "
-                                      + "Closer and closer to your destination! ... "
-                                      + "You overcame the first set of stairs. Now what?");
+                    System.out.println("\nYou are going up the stairs to the second floor!\n"
+                                      + "Closer and closer to your destination! ...\n"
+                                      + "You overcame the first set of stairs. Now what?\n");
                     this.finished = true;
                     break;
 
@@ -123,8 +123,6 @@ public class FloorOne implements Floor {
             }
             return;
         }
-
-        // FALLBACK SAFETY – should never trigger but prevents silent failure
         unreasonableNoun();
     }
 
@@ -132,43 +130,42 @@ public class FloorOne implements Floor {
     public void talkto(String person) {
 
         if (!metStudent) {
-            System.out.println("You haven't met anyone yet.");
+            System.out.println("\nYou haven't met anyone yet.\n");
             return;
         }
 
-        // VERY SMALL FIX: accept anything containing "student"
         if (person.toLowerCase().contains("student")) {
             System.out.println(
-                "The student looks at you and smiles weakly.\n"
-              + "\"Oh yeah, good luck man. I wanted to be a CS major my first year, "
+                "\nThe student looks at you and smiles weakly.\n"
+              + "\"Oh yeah, good luck man. I wanted to be a CS major my first year,\n"
               + "but I left after taking 151. Still gives me goosebumps.\n"
               + "Anyway, getting to the second floor will get you closer to the CS rooms.\n "
               + "I'll walk you to the main hallway.\"\n"
               + "....\n"
               + "\"Okay, now you just need to go right\"\n"
             );
-            this.talkedToStudent = true;   // <-- This is the missing piece
+            this.talkedToStudent = true;
         } 
         else {
-            System.out.println("You have to specify who you want to talk to.");
+            System.out.println("\nYou have to specify who you want to talk to.\n");
         }
     }
 
     @Override
     public void pickup(String object) {
-        System.out.println("There is nothing to pick up here.");
+        System.out.println("\nThere is nothing to pick up here.\n");
     }
 
     @Override
     public void use(String object) {
-        System.out.println("You can't use that right now.");
+        System.out.println("\nYou can't use that right now.\n");
     }
 
     public boolean isFinished() {
         return this.finished;
     }
 
-    public Floor nextFloor(){
-        return new FloorTwo();
+    public Floor nextFloor(Inventory inventory){
+        return new FloorTwo(inventory);
     }
 }

@@ -7,9 +7,12 @@ public class TextAdventure {
     static Floor floor;
     static Scanner scanner;
     static Parser parser;
+    static Inventory inventory;
 
     public TextAdventure() {
-        floor = new FloorOne();
+        Inventory inv = new Inventory();
+        inventory = inv;
+        floor = new FloorOne(inv);
         scanner = new Scanner(System.in);
         parser = new Parser();
     }
@@ -20,12 +23,15 @@ public class TextAdventure {
 
     public static String getVerb(String command) {
         String[] words = command.split(" ");
+        if(command == "wait"){
+            return "wait";
+        }
         if (words.length >= 3) {
             return words[0] + " " + words[1];
         } else if (words.length == 2) {
             return words[0];
         } else {
-            return "";
+            return words[0];
         }
     }
 
@@ -46,7 +52,7 @@ public class TextAdventure {
         boolean playing = true;
 
         System.out.println(
-            "It's your first semester at Grinnell College. You signed up for your first computer science class CSC151.\n"
+            "\nIt's your first semester at Grinnell College. You signed up for your first computer science class CSC151.\n"
             + "You're very excited. Self-service portal showed that class located in so called Noyce, Room 3815.\n"
             + "You're standing in front of Noyce entrance and your class starts in 5 minutes. You cannot be late!\n"
             + "But here is a problem: you need to find your way to your classroom... it's harder than you expect.\n"
@@ -63,7 +69,7 @@ public class TextAdventure {
             parser.parse(verb, noun, floor);
 
             if (floor.isFinished()) {
-                Floor next = floor.nextFloor();
+                Floor next = floor.nextFloor(inventory);
                 if (next == null) {
                     System.out.println("You reached the ending of the game!");
                     break;
